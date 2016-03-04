@@ -1,0 +1,8 @@
+#include <stdio.h>
+
+void main()
+{
+    printf("Eletronica Embarcada\n"
+           "Aula2 - Revisao C\n"
+           "Caio, Pablo, Ricardo, 03/03/2016");
+}
