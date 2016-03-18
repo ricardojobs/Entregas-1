@@ -32,6 +32,7 @@
  * ----------------------------------
  */
 #define PIN_LED_BLUE 19
+#define PIN_LED_GREEN 20
 
 /**
  * Main function
@@ -64,8 +65,7 @@ int main (void)
 
 	//31.6.1 PIO Enable Register
 	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).	
-	
-	PIOA->PIO_PER = (1 << PIN_LED_BLUE );
+	PIOA->PIO_PER = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );
 
 	// 31.6.46 PIO Write Protection Mode Register
 	// 0: Disables the write protection if WPKEY corresponds to 0x50494F (PIO in ASCII).
@@ -75,7 +75,7 @@ int main (void)
 	// value =
 	//	 	1 : Enables the output on the I/O line.
 	//	 	0 : do nothing
-	PIOA->PIO_OER |=  (1 << PIN_LED_BLUE );
+	PIOA->PIO_OER =  (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );
 
 	// 31.6.10 PIO Set Output Data Register
 	// value = 
@@ -96,9 +96,9 @@ int main (void)
              */
             //delay_ms();
 			
-			PIOA->PIO_SODR |= (1 << PIN_LED_BLUE );		//Apaga led azul
+			PIOA->PIO_SODR = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );		//Apaga led azul e verde		
 			delay_ms(1000);
-			PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
+			PIOA->PIO_CODR = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );		//Liga led azul e verde
 			delay_ms(1000);
 		
 	}
