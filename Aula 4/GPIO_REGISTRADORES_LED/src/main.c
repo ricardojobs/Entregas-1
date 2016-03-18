@@ -62,9 +62,10 @@ int main (void)
 	// ID_PIOA = 11 - TAB 11-1
 	PMC->PMC_PCER0 |= ID_PIOA;
 
-	 //31.6.1 PIO Enable Register
+	//31.6.1 PIO Enable Register
 	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).	
-	PIOA->PIO_PER |= (1 << PIN_LED_BLUE );
+	
+	PIOA->PIO_PER = (1 << PIN_LED_BLUE );
 
 	// 31.6.46 PIO Write Protection Mode Register
 	// 0: Disables the write protection if WPKEY corresponds to 0x50494F (PIO in ASCII).
@@ -80,7 +81,9 @@ int main (void)
 	// value = 
 	// 		1 : Sets the data to be driven on the I/O line.
 	// 		0 : do nothing
-	PIOA->PIO_SODR = (1 << PIN_LED_BLUE );
+	
+	//PIOA->PIO_SODR |= (1 << PIN_LED_BLUE );
+	PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
 
 	/**
 	*	Loop infinito
