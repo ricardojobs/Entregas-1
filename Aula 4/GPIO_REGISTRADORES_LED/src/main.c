@@ -83,7 +83,7 @@ int main (void)
 	// 		0 : do nothing
 	
 	//PIOA->PIO_SODR |= (1 << PIN_LED_BLUE );
-	PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
+	//PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
 
 	/**
 	*	Loop infinito
@@ -95,6 +95,11 @@ int main (void)
              * escolhida por você.
              */
             //delay_ms();
+			
+			PIOA->PIO_SODR |= (1 << PIN_LED_BLUE );		//Apaga led azul
+			delay_ms(1000);
+			PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
+			delay_ms(1000);
 		
 	}
 }
