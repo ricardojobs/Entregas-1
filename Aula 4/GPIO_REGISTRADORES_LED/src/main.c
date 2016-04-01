@@ -7,36 +7,9 @@
  *  lógica alta apaga e lógica baixa acende.
 */
 
-void turn_on(void);
-void turn_off(void);
-
 #include <asf.h>
+#include "maua.h"
 
-/*
- * Prototypes
- */
-
-/** 
- * Definição dos pinos
- * Pinos do uC referente aos LEDS.
- *
- * O número referente ao pino (PIOAxx), refere-se ao
- * bit que deve ser configurado no registrador para alterar
- * o estado desse bit específico.
- *
- * exe : O pino PIOA_19 é configurado nos registradores pelo bit
- * 19. O registrador PIO_SODR configura se os pinos serão nível alto.
- * Nesse caso o bit 19 desse registrador é referente ao pino PIOA_19
- *
- * ----------------------------------
- * | BIT 19  | BIT 18  | ... |BIT 0 |
- * ----------------------------------
- * | PIOA_19 | PIOA_18 | ... |PIOA_0|
- * ----------------------------------
- */
-#define PIN_LED_BLUE 19
-#define PIN_LED_GREEN 20
-#define PIN_LED_RED 20
 /**
  * Main function
  * 1. configura o clock do sistema
@@ -64,22 +37,25 @@ int main (void)
 	// 29.17.4 PMC Peripheral Clock Enable Register 0
 	// 1: Enables the corresponding peripheral clock.
 	// ID_PIOA = 11 - TAB 11-1
-	PMC->PMC_PCER0 = ID_PIOA | ID_PIOC;
+	PMC->PMC_PCER0 = (1 << ID_PIOA) | (1 <<ID_PIOC) | ( 1 << ID_PIOB) ;
+	
 	//31.6.1 PIO Enable Register
 	// 1: Enables the PIO to control the corresponding pin (disables peripheral control of the pin).	
 	PIOA->PIO_PER = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );
-	PIOC->PIO_PER = (1<<PIN_LED_RED);
+	PIOC->PIO_PER = (1 << PIN_LED_RED);
+		
 	// 31.6.46 PIO Write Protection Mode Register
 	// 0: Disables the write protection if WPKEY corresponds to 0x50494F (PIO in ASCII).
 	PIOA->PIO_WPMR = 0;
 	PIOC->PIO_WPMR = 0;
+	
 	// 31.6.4 PIO Output Enable Register
 	// value =
 	//	 	1 : Enables the output on the I/O line.
 	//	 	0 : do nothing
-	PIOA->PIO_OER =  (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );
+	PIOA->PIO_OER = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );
 	PIOC->PIO_OER = (1 << PIN_LED_RED);
-
+	
 	// 31.6.10 PIO Set Output Data Register
 	// value = 
 	// 		1 : Sets the data to be driven on the I/O line.
@@ -88,6 +64,17 @@ int main (void)
 	//PIOA->PIO_SODR |= (1 << PIN_LED_BLUE );
 	//PIOA->PIO_CODR |= (1 << PIN_LED_BLUE );		//Liga led azul
 
+
+	//Configurando I/O line PIOB[3] como INPUT
+	PIOB->PIO_PER = (1 << PIN_BOTAO );
+    PIOB->PIO_ODR = (1 << PIN_BOTAO);
+	PIOB->PIO_PUER = (1 << PIN_BOTAO);
+
+	//OPCIONAL
+	PIOB->PIO_SCDR = 1;
+	PIOB->PIO_IFSCER = (1<<PIN_BOTAO);
+	PIOB->PIO_IFER = (1<<PIN_BOTAO);
+		
 	/**
 	*	Loop infinito
 	*/
@@ -99,23 +86,14 @@ int main (void)
              */
             //delay_ms();
 			
-			
-			turn_on();		
-			delay_ms(1000);
-			turn_off();
-			delay_ms(1000);
-		
+			if (!(( PIOB->PIO_PDSR >> PIN_BOTAO) & 1))
+			{		
+				turn_on();
+				delay_ms(1000);
+				turn_off();
+				delay_ms(1000);
+			}			
+						
 	}
 }
 
-void turn_on(void)
-{
-	PIOA->PIO_CODR = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );		//Liga led azul e verde
-	PIOC->PIO_SODR = (1 <<PIN_LED_RED);	
-}
-
-void turn_off(void)
-{
-	PIOA->PIO_SODR = (1 << PIN_LED_BLUE ) | (1 << PIN_LED_GREEN );		//Apaga led azul e verde
-	PIOC->PIO_CODR = (1 << PIN_LED_RED);
-}

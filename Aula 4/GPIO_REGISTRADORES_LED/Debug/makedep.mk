@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\maua.c
+
 src\ASF\common\services\clock\sam4s\sysclk.c
 
 src\ASF\common\services\delay\sam\cycle_counter.c
